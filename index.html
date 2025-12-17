@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+    content="Self-supervised Learning of Reconstructing Deformable Linear Objects under Single-Frame Occluded View">
+  <meta name="keywords"
+    content="Hand-object iteractions; Motion refinement; Inverse problems; Generative priors; Diffusion models">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta property="og:type" content="video.other" />
+  <title>Self-supervised Learning of Reconstructing Deformable Linear Objects under Single-Frame Occluded View</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <!-- <link rel="stylesheet" href="./static/css/styles.css"> -->
+  <link rel="icon" href="./static/images/icon.png">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+  <script src="assets/js/video_comparison.js"></script>
+
+  <script src="https://polyfill.io/v3/polyfill.js?features=IntersectionObserver"></script>
+  <!-- <script src="./static/js/yall.js"></script> -->
+  <script>
+    yall(
+      {
+        observeChanges: true
+      }
+    );
+  </script>
+  <!-- <script src="./static/js/scripts.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+  <script src="https://uploads-ssl.webflow.com/51e0d73d83d06baa7a00000f/js/webflow.fd002feec.js"></script>
+  <script type="module" src="https://unpkg.com/@google/model-viewer@2.0.1/dist/model-viewer.min.js"></script>
+  <!-- import LaTex -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      chtml: {
+        matchFontHeight: true,
+        scale: 0.8, // 调整公式的缩放比例
+        mtextInheritFont: true, // 使公式中的文本继承网页的字体
+        merror: { fontFamily: 'serif' } // 错误信息的字体
+      }
+    };
+  </script>
+  <style>
+    .horizontal_line {
+      width: 90%;
+      height: 5px;
+      border-top: 5px dotted black;
+      line-height: 80%;
+    }
+
+    .line {
+      border-bottom: 1px solid rgb(172, 170, 170);
+      margin-top: 1px;
+      margin-left: 130px;
+      width: 80%;
+    }
+  </style>
+</head>
+
+<body>
+
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <!-- <h1 class="title is-1 publication-title">
+            <img src="./static/images/icon-2-new.png" alt="logo" style="width: 60px; height: 78px; margin-right: -3px; margin-bottom: -10px;">
+            <span style="color: orange; font-weight:bold">Quasi</span><span style="color: rgb(200, 144, 252); font-weight:bold">Sim</span>
+          </h1> -->
+            <img src="./static/images/title.png" alt="title"
+              style="width: 45%; height: auto; margin-right: -3px; margin-bottom: 10px;">
+            <h2 class="title is-1 publication-title">
+              Self-supervised Learning of Reconstructing Deformable Linear Objects under <br> Single-Frame Occluded View
+            </h2>
+            <!-- Shape Control of Deformable Linear Objects -->
+
+            <!-- <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              Anonymous Author(s)
+            </span>
+          </div>
+          <div class="is-size-5 publication-authors">
+            <span style="font-weight:bold">Paper under double-blind review</span>
+          </div> -->
+
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a href="">Song Wang</a>,</span>
+              <span class="author-block">
+                <a href="">Guanghui Shen</a>,</span>
+              <span class="author-block">
+                <a href="">Shirui Wu</a>,</span>
+              <span class="author-block">
+                <a href="">Dan Wu</a></span>
+            </div>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">Department of Mechanical Engineering, Tsinghua University</span>
+            </div>
+            <div class="is-size-5 publication-authors">
+              <span style="font-weight:bold">ICRA2025</span>
+            </div>
+
+
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+
+
+
+                <span class="link-block">
+                  <a href="./static/pdfs/Self-supervised_Learning_of_Reconstructing_Deformable_Linear_Objects_under_Single-Frame_Occluded_View.pdf"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                    </span>
+                    <span>Paper</span>
+                  </a>
+                </span>
+
+
+                <span class="link-block">
+                  <a href="https://github.com/MP2CDLO/MP2CDLO"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code</span>
+                  </a>
+                </span>
+
+
+                <!-- <span class="link-block">
+                  <a href="https://youtu.be/Pho3KisCsu4" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                    </span>
+                    <span>Video</span>
+                  </a>
+                </span> -->
+
+                <span class="link-block">
+                  <a href="./static/pdfs/Supplement.pdf" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-slideshare"></i>
+                    </span>
+                    <span>Slides</span>
+                  </a>
+                </span>
+
+                <span class="link-block">
+                  <a href="https://drive.google.com/file/d/1pq0lp8D54lBF9npg-YmXRExbDKM_DUDo/view?usp=sharing"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fas fa-database"></i>
+                    </span>
+                    <span>Dateset</span>
+                  </a>
+                </span>
+
+                <!-- <span class="link-block">
+                <a href="./static/others/highres-figs.zip"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fa fa-database" aria-hidden="true"></i>
+                  </span>
+                  <span>HighRes Figs</span>
+                </a>
+              </span> -->
+
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+        <div class="container is-max-desktop">
+          <div class="columns is-centered has-text-centered">
+            <div class="column is-four-fifths">
+              <video class="lazy" autoplay muted loop height="100%" style="border: 2px solid #3232321a;">
+                <source data-src="static/videos-lowres/cover.mp4" type="video/mp4">
+                </source>
+              </video>
+              <p><span style="color: rgb(102, 8, 116); font-weight:bold">Real-world </span>Demo of <span
+                  style="color: rgb(102, 8, 116); font-weight:bold">Occlusions</span> and <span
+                  style="color: rgb(102, 8, 116); font-weight:bold">Self-intersections</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+
+  <!--Divider-->
+  <div class="container is-full-hd is-centered">
+
+    <div class="custom-line"></div>
+
+  </div>
+  <!-- Abstract -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3"><span style="color: rgb(0, 0, 0); font-weight:bold">Video</span></h2>
+        </div>
+      </div>
+      <div class="columns is-centered has-text-centered">
+
+        <div class="column is-four-fifths">
+          <video class="lazy" autoplay controls muted height="100%" style="border: 2px solid #3232321a;">
+            <source data-src="static/videos-lowres/demo_video.mp4" type="video/mp4">
+            </source>
+          </video>
+        </div>
+      </div>
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3"><span style="color: rgb(0, 0, 0); font-weight:bold">Abstract</span></h2>
+          <div class="content has-text-justified">
+            <p>
+              <span style="color: rgb(3, 168,158); font-weight:bold">Deformable linear objects (DLOs)</span>,
+              such as ropes, cables, and rods, are common in various scenarios, and <span
+                style="color: rgb(3, 168,158); font-weight:bold">
+                accurate occlusion reconstruction</span>
+              of them are <span style="color: rgb(3, 168,158); font-weight:bold">crucial for effective robotic
+                manipulation. </span>Previous studies for DLO reconstruction either
+              rely on supervised learning, which is limited by the availability of labeled real-world data, or
+              geometric approaches, which fail to capture global features and often struggle with occlusions and complex
+              shapes. This paper presents
+              <span style="color: rgb(102, 8, 116); font-weight:bold">a novel DLO occlusion reconstruction framework
+              </span>that
+              integrates self-supervised point cloud
+              completion with traditional techniques like clustering, sorting, and fitting to
+              generate ordered key points.
+              <span style="color: rgb(102, 8, 116); font-weight:bold">A memory module</span> is proposed to enhance the
+              self-supervised training process by consolidating prototype information, while <span
+                style="color: rgb(102, 8, 116); font-weight:bold">DLO shape constraints </span>are
+              utilized</span> to improve reconstruction accuracy.
+              Experimental results on
+              both synthetic and real-world datasets
+              demonstrate that our method
+              <span style="color: rgb(40,61, 126); font-weight:bold">outperforms
+                state-of-the-art algorithms</span>, particularly in scenarios involving <span
+                style="color: rgb(40,61, 126); font-weight:bold">complex occlusions and intricate
+                self-intersections.</span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+  <!-- Framework  -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3"><span style="color: rgb(0, 0, 0); font-weight:bold">Framework</span></h2>
+          <div class="content has-text-justified">
+            <h4 class="title is-5 center-text"><span style="color: rgb(41, 34, 33); font-weight:bold">Self-supuervised
+                DLO occlusion
+                Single-Frame
+                Reconstruction Framework</span></h4>
+          </div>
+          <img src="./figs/framework.png" alt="Framework PNG" width="100%" height="100%">
+          <div class="content has-text-justified">
+            <p class="center-text">
+              <span style="color: rgb(41, 34, 33); font-weight:bold"> A. Self-supervised
+                DLO Point cloud completion, B. Ordered key points generation.</span>
+            </p>
+            <!-- <p>The framework employs <span style="color:rgb(102, 8, 116); font-weight:bold">a
+                self-supervised method</span> to complete the DLO's point clouds. To overcome the weak supervisory
+              signals
+              inherent in self-supervised learning, we introduce <span
+                style="color:rgb(102, 8, 116); font-weight:bold">a memory module </span>that extracts memory across
+              samples
+              to <span style="color:rgb(3, 168,158); font-weight:bold">reinforce the supervisory signals</span>. For
+              the complexities introduced by the highly intricate shapes
+              of DLOs, we integrate <span style="color:rgb(102, 8, 116); font-weight:bold">DLO prior knowledge
+                constraints</span>, which <span style="color:rgb(3, 168,158); font-weight:bold">guide the training
+                process</span> for improved
+              performance. Subsequently, a series of <span style="color:rgb(102, 8, 116); font-weight:bold">traditional
+                methods</span> (clustering, sorting, fitting and
+              resampling) are applied to <span style="color: rgb(3, 168,158); font-weight:bold">generate ordered key
+                points</span>. This framework leverages the feature
+              extraction capabilities of deep learning to capture global characteristics and represent information
+              beyond pure geometry. By adopting a self-supervised learning approach, the framework <span
+                style="color: rgb(40,61, 126); font-weight:bold">eliminates the
+                need for labeled data in virtual environments, effectively bridging the Sim2Real gap</span>.</p> -->
+            <!-- <p>
+              After <span style="color: rgb(254, 180, 123); font-weight:bold;">embedding direction information</span>,
+              the
+              <span style="color: rgb(104, 104, 104); font-weight:bold">partial point cloud \(P_{p}\) </span>is fed
+              into
+              our
+              self-supervised DLO point cloud completion <span
+                style="color: rgb(161, 161, 244); font-weight:bold">neural
+                network </span>to generate the<span style="color: rgb(67, 133, 199); font-weight:bold"> complete point
+                cloud \(P_{c}\)</span>.
+              To
+              estimate the state of the DLO, \(P_{c}\) undergoes <span
+                style="color: rgb(0, 0, 0); font-weight:bold">clustering, sorting,
+                B-spline fitting and
+                resampling</span>,
+              ultimately resulting in the <span style="color: rgb(124, 8, 131); font-weight:bold">reconstructed key
+                points</span>.
+            </p> -->
+          </div>
+          <!-- <div class="content has-text-justified">
+
+          </div> -->
+        </div>
+      </div>
+
+    </div>
+  </section>
+  <!--Divider-->
+  <!-- <div class="container is-full-hd is-centered">
+    <div class="line"></div>
+  </div> -->
+  <div class="container is-max-desktop is-centered has-text-centered">
+    <h2 class="title is-3"><span style="color: rgb(0, 0, 0); font-weight:bold">Experiments</span></h2>
+  </div>
+  <!-- Vitural Data Generation -->
+  <section class="section">
+
+    <div class="container is-max-desktop is-centered has-text-centered">
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h3 class="title is-4"><span style="color: rgb(197, 90, 17);"> Simulation Experiments</span>—Synthetic
+            Dataset Generation</h3>
+
+          <h4 class="title is-5"> <span style="color: rgb(41, 34, 33); font-weight:bold">The DLO has randomly moving
+              endpoints, while an occlusion cube moves to simulate
+              occlusions.</span></h4>
+
+          <div class="columns is-centered">
+            <div class="video-container">
+              <div class="video-two-column">
+                <video id="Virtual rgb data generation in isaac_sim" class="lazy fixed-height-video" autoplay muted loop
+                  playsinline height="100%">
+                  <source data-src="./static/videos-lowres/simulation/rgb.mp4" type="video/mp4">
+                </video>
+                <p>
+                  The RGB image
+                </p>
+              </div>
+              <div class="video-two-column">
+                <video id="Virtual pcd data generation in isaac_sim" class="lazy fixed-height-video mirrored-video"
+                  autoplay muted loop playsinline height="100%">
+                  <source data-src="./static/videos-lowres/simulation/pcd.mp4" type="video/mp4">
+                </video>
+                <p>
+                  The Generated Point Cloud
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!--Divider-->
+  <div class="container is-full-hd is-centered">
+    <div class="custom-line"></div>
+  </div>
+
+  <!-- Experimental Comparison Based on Virtual Data -->
+  <section class="section">
+
+    <div class="container is-max-desktop is-centered has-text-centered">
+      <div class="columns is-centered">
+
+        <div class="column is-full-width">
+          <h3 class="title is-4"><span style="color: rgb(197, 90, 17);"> Simulation Experiments</span>—Comparison
+            Results</h3>
+          <!-- <p>We perform well on <span style="color: orange; font-weight:bold">intricate manipulations</span> such as complicated tool-using with <span style="color: rgb(36, 143, 236); font-weight:bold">non-trivial object movements</span>, functional interactions with <span style="color: rgb(253, 125, 212); font-weight:bold">rich and changing contacts</span>, and manipulations involving subtle object motions such as slight shaking.</p> -->
+          <!-- We can accurately track <span style="color: orange; font-weight:bold">complex manipulations</span> involving <span style="color: rgb(253, 125, 212); font-weight:bold">rich and changing contacts</span>, <br> <span style="color: rgb(36, 143, 236); font-weight:bold">non-trivial object motions</span>, and <span style="color: rgb(30, 143, 2); font-weight:bold">intricate tool-using</span>. -->
+
+          <br>
+          <div style="margin-bottom: -10px;">
+          </div>
+
+          <img src="./static/images/label.png" alt="Label PNG" width="80%" height="100%">
+          <p> </p>
+          <br>
+          <div class="columns is-centered">
+
+            <div class="video-container">
+              <div class="video-item">
+                <video id="Experimental Comparison Based on Virtual Data 1" class="lazy" autoplay muted loop playsinline
+                  height="100%">
+                  <source data-src="./static/videos-lowres/simulation/compare1.mp4" type="video/mp4">
+                </video>
+                <p>Case 1</p>
+              </div>
+              <div class="video-item">
+                <video id="Experimental Comparison Based on Virtual Data 2" class="lazy" autoplay muted loop playsinline
+                  height="100%">
+                  <source data-src="./static/videos-lowres/simulation/compare2.mp4" type="video/mp4">
+                </video>
+                <p>Case 2</p>
+              </div>
+              <div class="video-item">
+                <video id="Experimental Comparison Based on Virtual Data 3" class="lazy" autoplay muted loop playsinline
+                  height="100%">
+                  <source data-src="./static/videos-lowres/simulation/compare3.mp4" type="video/mp4">
+                </video>
+                <p>Case 3</p>
+              </div>
+              <div class="video-item">
+                <video id="Experimental Comparison Based on Virtual Data 4" class="lazy" autoplay muted loop playsinline
+                  height="100%">
+                  <source data-src="./static/videos-lowres/simulation/compare4.mp4" type="video/mp4">
+                </video>
+                <p>Case 4</p>
+              </div>
+              <div class="video-item">
+                <video id="Experimental Comparison Based on Virtual Data 5" class="lazy" autoplay muted loop playsinline
+                  height="100%">
+                  <source data-src="./static/videos-lowres/simulation/compare5.mp4" type="video/mp4">
+                </video>
+                <p>Case 5</p>
+              </div>
+              <div class="video-item">
+                <video id="Experimental Comparison Based on Virtual Data 6" class="lazy" autoplay muted loop playsinline
+                  height="100%">
+                  <source data-src="./static/videos-lowres/simulation/compare6.mp4" type="video/mp4">
+                </video>
+                <p>Case 6</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!--Divider-->
+  <div class="container is-full-hd is-centered">
+    <div class="custom-line"></div>
+  </div>
+
+  <!--Training and Experimental Results Based on Real Data-->
+  <section class="section">
+
+    <div class="container is-max-desktop is-centered has-text-centered">
+      <div class="columns is-centered">
+        <!-- <h2 class="title is-3">Dexterous Manipulations Transfer</h2> -->
+        <div class="column is-full-width">
+          <!-- <h3 class="title is-4">Training and
+            Inference Results on Real Data</h3> -->
+          <!-- <p>We perform well on <span style="color: orange; font-weight:bold">intricate manipulations</span> such as complicated tool-using with <span style="color: rgb(36, 143, 236); font-weight:bold">non-trivial object movements</span>, functional interactions with <span style="color: rgb(253, 125, 212); font-weight:bold">rich and changing contacts</span>, and manipulations involving subtle object motions such as slight shaking.</p> -->
+          <!-- We can accurately track <span style="color: orange; font-weight:bold">complex manipulations</span> involving <span style="color: rgb(253, 125, 212); font-weight:bold">rich and changing contacts</span>, <br> <span style="color: rgb(36, 143, 236); font-weight:bold">non-trivial object motions</span>, and <span style="color: rgb(30, 143, 2); font-weight:bold">intricate tool-using</span>. -->
+          <!-- <br> -->
+
+          <h3 class="title is-4"><span style="color: rgb(47, 85, 151);"> Real-world Experiments</span>—Training Stage
+          </h3>
+
+          <h4 class="title is-5"><span style="color: rgb(41, 34, 33); font-weight:bold">Simplify data collection by
+              manual
+              manipulation of both ends of DLO under an RGB-D
+              camera.</span></h4>
+
+
+          <div class="columns is-centered">
+            <div class="video-container">
+              <div class="video-two-column">
+                <video id="hand collection rgb" class="lazy fixed-height-video " autoplay muted loop playsinline
+                  height="100%">
+                  <source data-src="./static/videos-lowres/manual/hand_collection_rgb_clip.mp4" type="video/mp4">
+                </video>
+                <p>
+                  Manually Collected Scene
+                </p>
+              </div>
+              <div class="video-two-column">
+                <video id="hand collection pcd" class="lazy fixed-height-video mirrored-video" autoplay muted loop
+                  playsinline height="100%">
+                  <source data-src="./static/videos-lowres/manual/hand_collection_pcd.mp4" type="video/mp4">
+                </video>
+                <p>
+                  The Collected Point Cloud
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="container is-full-hd is-centered">
+            <div class="custom-line"></div>
+          </div>
+          <br>
+
+          <h3 class="title is-4"><span style="color: rgb(47, 85, 151);"> Real-world Experiments</span>—Inference Stage
+          </h3>
+
+
+          <div class="column is-centered">
+            <h4 class="title is-5"><span style="color: rgb(41, 34, 33); font-weight:bold">Visualization of Occlusions
+                and
+                Self-intersections</span></h4>
+            <div class="video-container">
+              <div class="video-two-column">
+                <video id="normal robotic motion rgb" class="lazy fixed-height-video " autoplay muted loop playsinline
+                  height="100%">
+                  <source data-src="./static/videos-lowres/robotic/robot_run_easy_rgb.mp4" type="video/mp4">
+                </video>
+
+              </div>
+              <div class="video-two-column">
+                <video id="normal robotic motion pcd" class="lazy fixed-height-video" autoplay muted loop playsinline
+                  height="100%">
+                  <source data-src="./static/videos-lowres/robotic/robot_run_hard_rgb.mp4" type="video/mp4">
+                </video>
+
+              </div>
+              <div class="video-two-column">
+                <video id="complex robotic motion rgb" class="lazy fixed-height-video " autoplay muted loop playsinline
+                  height="100%">
+                  <source data-src="./static/videos-lowres/robotic/robot_run_easy_pcd.mp4" type="video/mp4">
+                </video>
+                <p>
+                  Normal Scenario
+                </p>
+
+              </div>
+              <div class="video-two-column">
+                <video id="complex robotic motion pcd" class="lazy fixed-height-video" autoplay muted loop playsinline
+                  height="100%">
+                  <source data-src="./static/videos-lowres/robotic/robot_run_hard_pcd.mp4" type="video/mp4">
+                </video>
+                <p>
+                  Complex Scenario
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="container is-full-hd is-centered">
+            <div class="custom-line"></div>
+          </div>
+          <!-- More Single Frame Details-->
+          <div class="container is-max-desktop is-centered has-text-centered">
+            <div class="columns is-centered">
+              <div class="hero-body">
+                <h4 class="title is-5"><span style="color: rgb(41, 34, 33); font-weight:bold">More Single-Frame
+                    Details</span></h4>
+                <div class="container">
+                  <div id="results-carousel" class="carousel results-carousel">
+                    <div class="item item-fullbody">
+                      <img src="./static/images/robotic2.png" alt="Robotic Single Frame 1" width="100%">
+                      <video poster="" id="fullbody" autoplay playsinline muted loop height="10%">
+                        <source src="./static/videos-lowres/robotic/robotic2.mp4" type="video/mp4">
+                      </video>
+                      <p>Viewpoint Occlusion</p>
+                      <p>Self-intersection</p>
+                      <img src="./static/images/break.png" alt="space" width="100%">
+
+
+                    </div>
+                    <div class="item item-shiba">
+                      <img src="./static/images/robotic7.png" alt="Robotic Single Frame 2" width="100%">
+                      <video poster="" id="scissors" autoplay playsinline muted loop height="10%">
+                        <source src="./static/videos-lowres/robotic/robotic7.mp4" type="video/mp4">
+                      </video>
+                      <p>Extensive Occlusion</p>
+                      <p>Trivial DLO Shape</p>
+                      <img src="./static/images/break.png" alt="space" width="100%">
+                    </div>
+                    <div class="item item-shiba">
+                      <img src="./static/images/robotic5.png" alt="Robotic Single Frame 3" width="100%">
+                      <video poster="" id="scissors" autoplay playsinline muted loop height="10%">
+                        <source src="./static/videos-lowres/robotic/robotic5.mp4" type="video/mp4">
+                      </video>
+                      <p>Spatial Proximity</p>
+                      <p>Self-intersection</p>
+                      <img src="./static/images/break.png" alt="space" width="100%">
+                    </div>
+                    <div class="item item-shiba">
+                      <img src="./static/images/rgb_keypoints_1025.png" alt="Robotic Single Frame 4" width="100%">
+                      <video poster="" id="scissors" autoplay playsinline muted loop height="10%">
+                        <source src="./static/videos-lowres/robotic/1025.mp4" type="video/mp4">
+                      </video>
+                      <p>No Occlusion</p>
+                      <p>Trivial DLO Shape</p>
+                      <img src="./static/images/break.png" alt="space" width="100%">
+                    </div>
+                    <div class="item item-shiba">
+                      <img src="./static/images/robotic6.png" alt="Robotic Single Frame 5" width="100%">
+                      <video poster="" id="shiba" autoplay playsinline muted loop height="100%">
+                        <source src="./static/videos-lowres/robotic/robotic6.mp4" type="video/mp4">
+                      </video>
+                      <p>Viewpoint Occlusion</p>
+                      <p>Self-intersection</p>
+                      <img src="./static/images/break.png" alt="space" width="100%">
+                    </div>
+                    <div class="item item-toby">
+                      <img src="./static/images/rgb_keypoints_1250.png" alt="Robotic Single Frame 6" width="100%">
+                      <video poster="" id="toby" autoplay playsinline muted loop height="100%">
+                        <source src="./static/videos-lowres/robotic/1250.mp4" type="video/mp4">
+                      </video>
+                      <p>Slight Occlusion</p>
+                      <p>Trivial DLO Shape</p>
+                      <img src="./static/images/break.png" alt="space" width="100%">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <br>
+          <h4 class="title is-5"><span style="color: rgb(104, 104, 104); font-weight:bold">More Single Frame
+              Details</span></h4> -->
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!--Divider-->
+  <div class="container is-full-hd is-centered">
+    <div class="custom-line"></div>
+  </div>
+  <section class="section" id="Contact">
+    <div class="container is-max-desktop content has-text-centered">
+      <!-- <h2 class="title">Contact</h2> -->
+      <h2 class="title is-3">Contact</h2>
+      <p>
+        Please contact us at <a href="mailto:wangs23@mails.tsinghua.edu.cn">wangs23@mails.tsinghua.edu.cn</a>, if you
+        have any question.
+      </p>
+    </div>
+  </section>
+
+  <script src="https://polyfill.io/v3/polyfill.js?features=IntersectionObserver"></script>
+  <!-- <script src="/assets/js/yall.js"></script> -->
+  <script>
+    yall(
+      {
+        observeChanges: true
+      }
+    );
+  </script>
+  <!-- <script src="/assets/js/scripts.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+  <script src="https://uploads-ssl.webflow.com/51e0d73d83d06baa7a00000f/js/webflow.fd002feec.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var lazyVideos = [].slice.call(document.querySelectorAll("video.lazy"));
+      if ("IntersectionObserver" in window) {
+        var lazyVideoObserver = new IntersectionObserver(function (entries, observer) {
+          entries.forEach(function (video) {
+            if (video.isIntersecting) {
+              for (var source in video.target.children) {
+                var videoSource = video.target.children[source];
+                if (typeof videoSource.tagName === "string" && videoSource.tagName === "SOURCE") {
+                  videoSource.src = videoSource.dataset.src;
+                }
+              }
+              video.target.load();
+              video.target.classList.remove("lazy");
+              lazyVideoObserver.unobserve(video.target);
+            }
+          });
+        });
+        lazyVideos.forEach(function (lazyVideo) {
+          lazyVideoObserver.observe(lazyVideo);
+        });
+      }
+    });
+  </script>
+
+
+  <script>
+    function change_stochastic() {
+      console.info("hhh\n");
+      const showMoreBtn = document.getElementById('showMoreBtn_stochastic');
+      if (showMoreBtn.innerText == 'More results') {
+        showMoreBtn.innerText = 'Hide';
+      } else {
+        showMoreBtn.innerText = 'More results';
+      }
+    };
+
+    function change_arctic() {
+      console.info("hhh\n");
+      const showMoreBtn = document.getElementById('showMoreBtn_arctic');
+      if (showMoreBtn.innerText == 'More results') {
+        showMoreBtn.innerText = 'Hide';
+      } else {
+        showMoreBtn.innerText = 'More results';
+      }
+    };
+
+    function change_hoi4d() {
+      console.info("hhh\n");
+      const showMoreBtn = document.getElementById('showMoreBtn_hoi4d');
+      if (showMoreBtn.innerText == 'More results') {
+        showMoreBtn.innerText = 'Hide';
+      } else {
+        showMoreBtn.innerText = 'More results';
+      }
+    };
+
+    function change_grabbeta() {
+      console.info("hhh\n");
+      const showMoreBtn = document.getElementById('showMoreBtn_grabbeta');
+      if (showMoreBtn.innerText == 'More results') {
+        showMoreBtn.innerText = 'Hide';
+      } else {
+        showMoreBtn.innerText = 'More results';
+      }
+    };
+
+    function change_grab() {
+      console.info("hhh\n");
+      const showMoreBtn = document.getElementById('showMoreBtn_grab');
+      if (showMoreBtn.innerText == 'More results') {
+        showMoreBtn.innerText = 'Hide';
+      } else {
+        showMoreBtn.innerText = 'More results';
+      }
+    };
+
+    function change_appli() {
+      console.info("hhh\n");
+      const showMoreBtn = document.getElementById('showMoreBtn_appli');
+      if (showMoreBtn.innerText == 'More results') {
+        showMoreBtn.innerText = 'Hide';
+      } else {
+        showMoreBtn.innerText = 'More results';
+      }
+    };
+  </script>
+
+
+
+  <footer class="footer">
+    <div class="container">
+
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content">
+            <p>
+              The template is adapted from <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>. We thank
+              authors for their codebase.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+
+</html>
