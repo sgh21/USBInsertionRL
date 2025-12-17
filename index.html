@@ -285,54 +285,16 @@
         <div class="column is-four-fifths">
           <h2 class="title is-3"><span style="color: rgb(0, 0, 0); font-weight:bold">Framework</span></h2>
           <div class="content has-text-justified">
-            <h4 class="title is-5 center-text"><span style="color: rgb(41, 34, 33); font-weight:bold">Self-supuervised
-                DLO occlusion
-                Single-Frame
-                Reconstruction Framework</span></h4>
+            <h4 class="title is-5 center-text"><span style="color: rgb(41, 34, 33); font-weight:bold">Hil-serl for USB Insertion Task Training and Deployment Framework</span></h4>
           </div>
-          <img src="./figs/framework.png" alt="Framework PNG" width="100%" height="100%">
+          <img src="./static/images/framework.png" alt="Framework PNG" width="100%" height="100%">
           <div class="content has-text-justified">
-            <p class="center-text">
+            <!-- 框架描述 -->
+            <!-- <p class="center-text">
               <span style="color: rgb(41, 34, 33); font-weight:bold"> A. Self-supervised
                 DLO Point cloud completion, B. Ordered key points generation.</span>
-            </p>
-            <!-- <p>The framework employs <span style="color:rgb(102, 8, 116); font-weight:bold">a
-                self-supervised method</span> to complete the DLO's point clouds. To overcome the weak supervisory
-              signals
-              inherent in self-supervised learning, we introduce <span
-                style="color:rgb(102, 8, 116); font-weight:bold">a memory module </span>that extracts memory across
-              samples
-              to <span style="color:rgb(3, 168,158); font-weight:bold">reinforce the supervisory signals</span>. For
-              the complexities introduced by the highly intricate shapes
-              of DLOs, we integrate <span style="color:rgb(102, 8, 116); font-weight:bold">DLO prior knowledge
-                constraints</span>, which <span style="color:rgb(3, 168,158); font-weight:bold">guide the training
-                process</span> for improved
-              performance. Subsequently, a series of <span style="color:rgb(102, 8, 116); font-weight:bold">traditional
-                methods</span> (clustering, sorting, fitting and
-              resampling) are applied to <span style="color: rgb(3, 168,158); font-weight:bold">generate ordered key
-                points</span>. This framework leverages the feature
-              extraction capabilities of deep learning to capture global characteristics and represent information
-              beyond pure geometry. By adopting a self-supervised learning approach, the framework <span
-                style="color: rgb(40,61, 126); font-weight:bold">eliminates the
-                need for labeled data in virtual environments, effectively bridging the Sim2Real gap</span>.</p> -->
-            <!-- <p>
-              After <span style="color: rgb(254, 180, 123); font-weight:bold;">embedding direction information</span>,
-              the
-              <span style="color: rgb(104, 104, 104); font-weight:bold">partial point cloud \(P_{p}\) </span>is fed
-              into
-              our
-              self-supervised DLO point cloud completion <span
-                style="color: rgb(161, 161, 244); font-weight:bold">neural
-                network </span>to generate the<span style="color: rgb(67, 133, 199); font-weight:bold"> complete point
-                cloud \(P_{c}\)</span>.
-              To
-              estimate the state of the DLO, \(P_{c}\) undergoes <span
-                style="color: rgb(0, 0, 0); font-weight:bold">clustering, sorting,
-                B-spline fitting and
-                resampling</span>,
-              ultimately resulting in the <span style="color: rgb(124, 8, 131); font-weight:bold">reconstructed key
-                points</span>.
             </p> -->
+            
           </div>
           <!-- <div class="content has-text-justified">
 
@@ -355,12 +317,10 @@
     <div class="container is-max-desktop is-centered has-text-centered">
       <div class="columns is-centered">
         <div class="column is-full-width">
-          <h3 class="title is-4"><span style="color: rgb(197, 90, 17);"> Simulation Experiments</span>—Synthetic
-            Dataset Generation</h3>
+          <h3 class="title is-4"><span style="color: rgb(197, 90, 17);"> Admittance Control Experiments</span>—Smoothness Test</h3>
 
-          <h4 class="title is-5"> <span style="color: rgb(41, 34, 33); font-weight:bold">The DLO has randomly moving
-              endpoints, while an occlusion cube moves to simulate
-              occlusions.</span></h4>
+          <h4 class="title is-5"> <span style="color: rgb(41, 34, 33); font-weight:bold">The robot complies with human teaching 
+            operations while moving to the target position.</span></h4>
 
           <div class="columns is-centered">
             <div class="video-container">
@@ -370,7 +330,7 @@
                   <source data-src="./static/videos-lowres/simulation/rgb.mp4" type="video/mp4">
                 </video>
                 <p>
-                  The RGB image
+                  TEST1
                 </p>
               </div>
               <div class="video-two-column">
@@ -379,7 +339,7 @@
                   <source data-src="./static/videos-lowres/simulation/pcd.mp4" type="video/mp4">
                 </video>
                 <p>
-                  The Generated Point Cloud
+                  TEST2
                 </p>
               </div>
             </div>
@@ -396,70 +356,38 @@
   </div>
 
   <!-- Experimental Comparison Based on Virtual Data -->
-  <section class="section">
+    <section class="section">
 
     <div class="container is-max-desktop is-centered has-text-centered">
       <div class="columns is-centered">
-
         <div class="column is-full-width">
-          <h3 class="title is-4"><span style="color: rgb(197, 90, 17);"> Simulation Experiments</span>—Comparison
-            Results</h3>
-          <!-- <p>We perform well on <span style="color: orange; font-weight:bold">intricate manipulations</span> such as complicated tool-using with <span style="color: rgb(36, 143, 236); font-weight:bold">non-trivial object movements</span>, functional interactions with <span style="color: rgb(253, 125, 212); font-weight:bold">rich and changing contacts</span>, and manipulations involving subtle object motions such as slight shaking.</p> -->
-          <!-- We can accurately track <span style="color: orange; font-weight:bold">complex manipulations</span> involving <span style="color: rgb(253, 125, 212); font-weight:bold">rich and changing contacts</span>, <br> <span style="color: rgb(36, 143, 236); font-weight:bold">non-trivial object motions</span>, and <span style="color: rgb(30, 143, 2); font-weight:bold">intricate tool-using</span>. -->
+          <h3 class="title is-4"><span style="color: rgb(197, 90, 17);"> Takeover Experiments</span>—Spacemouse Test</h3>
 
-          <br>
-          <div style="margin-bottom: -10px;">
-          </div>
+          <h4 class="title is-5"> <span style="color: rgb(41, 34, 33); font-weight:bold">During the robot's operation, 
+            humans can take over at any time using the Spacemouse.</span></h4>
 
-          <img src="./static/images/label.png" alt="Label PNG" width="80%" height="100%">
-          <p> </p>
-          <br>
           <div class="columns is-centered">
-
             <div class="video-container">
-              <div class="video-item">
-                <video id="Experimental Comparison Based on Virtual Data 1" class="lazy" autoplay muted loop playsinline
-                  height="100%">
-                  <source data-src="./static/videos-lowres/simulation/compare1.mp4" type="video/mp4">
+              <div class="video-two-column">
+                <video id="Virtual rgb data generation in isaac_sim" class="lazy fixed-height-video" autoplay muted loop
+                  playsinline height="100%">
+                  <source data-src="./static/videos-lowres/simulation/rgb.mp4" type="video/mp4">
                 </video>
-                <p>Case 1</p>
+                <p>
+                  TEST1
+                </p>
               </div>
-              <div class="video-item">
-                <video id="Experimental Comparison Based on Virtual Data 2" class="lazy" autoplay muted loop playsinline
-                  height="100%">
-                  <source data-src="./static/videos-lowres/simulation/compare2.mp4" type="video/mp4">
+              <div class="video-two-column">
+                <video id="Virtual pcd data generation in isaac_sim" class="lazy fixed-height-video mirrored-video"
+                  autoplay muted loop playsinline height="100%">
+                  <source data-src="./static/videos-lowres/simulation/pcd.mp4" type="video/mp4">
                 </video>
-                <p>Case 2</p>
-              </div>
-              <div class="video-item">
-                <video id="Experimental Comparison Based on Virtual Data 3" class="lazy" autoplay muted loop playsinline
-                  height="100%">
-                  <source data-src="./static/videos-lowres/simulation/compare3.mp4" type="video/mp4">
-                </video>
-                <p>Case 3</p>
-              </div>
-              <div class="video-item">
-                <video id="Experimental Comparison Based on Virtual Data 4" class="lazy" autoplay muted loop playsinline
-                  height="100%">
-                  <source data-src="./static/videos-lowres/simulation/compare4.mp4" type="video/mp4">
-                </video>
-                <p>Case 4</p>
-              </div>
-              <div class="video-item">
-                <video id="Experimental Comparison Based on Virtual Data 5" class="lazy" autoplay muted loop playsinline
-                  height="100%">
-                  <source data-src="./static/videos-lowres/simulation/compare5.mp4" type="video/mp4">
-                </video>
-                <p>Case 5</p>
-              </div>
-              <div class="video-item">
-                <video id="Experimental Comparison Based on Virtual Data 6" class="lazy" autoplay muted loop playsinline
-                  height="100%">
-                  <source data-src="./static/videos-lowres/simulation/compare6.mp4" type="video/mp4">
-                </video>
-                <p>Case 6</p>
+                <p>
+                  TEST2
+                </p>
               </div>
             </div>
+
           </div>
         </div>
       </div>
@@ -484,7 +412,7 @@
           <!-- We can accurately track <span style="color: orange; font-weight:bold">complex manipulations</span> involving <span style="color: rgb(253, 125, 212); font-weight:bold">rich and changing contacts</span>, <br> <span style="color: rgb(36, 143, 236); font-weight:bold">non-trivial object motions</span>, and <span style="color: rgb(30, 143, 2); font-weight:bold">intricate tool-using</span>. -->
           <!-- <br> -->
 
-          <h3 class="title is-4"><span style="color: rgb(47, 85, 151);"> Real-world Experiments</span>—Training Stage
+          <h3 class="title is-4"><span style="color: rgb(47, 85, 151);"> Real-world Experiments</span>—Training Curve
           </h3>
 
           <h4 class="title is-5"><span style="color: rgb(41, 34, 33); font-weight:bold">Simplify data collection by
@@ -492,29 +420,24 @@
               manipulation of both ends of DLO under an RGB-D
               camera.</span></h4>
 
+            <div class="columns is-centered">
+              <div class="video-container">
+                <div class="video-two-column">
+                  <img src="static\images\curve_rewards.png" alt="Reward Curve PNG" width="100%" height="100%">
+                  <p>
+                    Reward Curve While Training
+                  </p>
+                </div>
+                <div class="video-two-column">
+                  <img src="static\images\curve_steps.png" alt="Intervention Frequency PNG" width="100%" height="100%">
+                  <p>
+                    Intervention Frequency While Training
+                  </p>
+                </div>
+              </div>
 
-          <div class="columns is-centered">
-            <div class="video-container">
-              <div class="video-two-column">
-                <video id="hand collection rgb" class="lazy fixed-height-video " autoplay muted loop playsinline
-                  height="100%">
-                  <source data-src="./static/videos-lowres/manual/hand_collection_rgb_clip.mp4" type="video/mp4">
-                </video>
-                <p>
-                  Manually Collected Scene
-                </p>
-              </div>
-              <div class="video-two-column">
-                <video id="hand collection pcd" class="lazy fixed-height-video mirrored-video" autoplay muted loop
-                  playsinline height="100%">
-                  <source data-src="./static/videos-lowres/manual/hand_collection_pcd.mp4" type="video/mp4">
-                </video>
-                <p>
-                  The Collected Point Cloud
-                </p>
-              </div>
             </div>
-          </div>
+
           <div class="container is-full-hd is-centered">
             <div class="custom-line"></div>
           </div>
@@ -568,7 +491,7 @@
             <div class="custom-line"></div>
           </div>
           <!-- More Single Frame Details-->
-          <div class="container is-max-desktop is-centered has-text-centered">
+          <!-- <div class="container is-max-desktop is-centered has-text-centered">
             <div class="columns is-centered">
               <div class="hero-body">
                 <h4 class="title is-5"><span style="color: rgb(41, 34, 33); font-weight:bold">More Single-Frame
@@ -635,7 +558,7 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
           <!-- <br>
           <h4 class="title is-5"><span style="color: rgb(104, 104, 104); font-weight:bold">More Single Frame
               Details</span></h4> -->
@@ -646,9 +569,9 @@
   </section>
 
   <!--Divider-->
-  <div class="container is-full-hd is-centered">
+  <!-- <div class="container is-full-hd is-centered">
     <div class="custom-line"></div>
-  </div>
+  </div> -->
   <section class="section" id="Contact">
     <div class="container is-max-desktop content has-text-centered">
       <!-- <h2 class="title">Contact</h2> -->
