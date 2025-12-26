@@ -94,13 +94,13 @@
               <span class="author-block"><a href="">Guanghui Shen<sup>1</sup></a>,</span>
               <span class="author-block"><a href="">Peishi Yan<sup>1</sup></a>,</span>
               <span class="author-block"><a href="">Chenyang Wang<sup>1</sup></a>,</span>
-              <span class="author-block"><a href="">Junda Cao<sup>2</sup></a>,</span>
-              <span class="author-block"><a href="">Xinyi Xu<sup>3</sup></a></span>
+              <span class="author-block"><a href="">Xinyi Xu<sup>2</sup></a>,</span>
+              <span class="author-block"><a href="">Junda Cao<sup>3</sup></a></span>
             </div>
             <div class="is-size-5 publication-authors">
               <span class="author-block"><sup>1</sup> Department of Mechanical Engineering, Tsinghua University</span>
-              <span class="author-block"><sup>2</sup> School of Information Science and Technology, Tsinghua University</span>
-              <span class="author-block"><sup>3</sup> School of Economics and Management, Tsinghua University</span>
+              <span class="author-block"><sup>2</sup> School of Economics and Management, Tsinghua University</span>
+              <span class="author-block"><sup>3</sup> School of Information Science and Technology, Tsinghua University</span>
             </div>
 
             <div class="is-size-5 publication-authors">
@@ -155,7 +155,7 @@
                   <span class="icon">
                     <i class="fas fa-database"></i>
                   </span>
-                  <span>Dateset</span> <!-- 保留原拼写错误 -->
+                  <span>Checkpoint</span> <!-- 保留原拼写错误 -->
                 </a>
               </span>
             </div>
@@ -266,13 +266,12 @@ awareness under sparse rewards, and (iii) <span style="color: rgb(102, 8, 116); 
           <!-- We can accurately track <span style="color: orange; font-weight:bold">complex manipulations</span> involving <span style="color: rgb(253, 125, 212); font-weight:bold">rich and changing contacts</span>, <br> <span style="color: rgb(36, 143, 236); font-weight:bold">non-trivial object motions</span>, and <span style="color: rgb(30, 143, 2); font-weight:bold">intricate tool-using</span>. -->
           <!-- <br> -->
 
-          <h3 class="title is-4"><span style="color: rgb(47, 85, 151);"> Real-world Experiments</span>—Training Curve
+          <h3 class="title is-4"><span style="color: rgb(197, 90, 17);"> Global Observation Evaluation</span>—Training Curve
           </h3>
 
-          <h4 class="title is-5"><span style="color: rgb(41, 34, 33); font-weight:bold">Simplify data collection by
-              manual
-              manipulation of both ends of DLO under an RGB-D
-              camera.</span></h4>
+          <h4 class="title is-5"><span style="color: rgb(41, 34, 33); font-weight:bold">Global encoding accelerates 
+            convergence while improving final performance.
+          </span></h4>
 
             <div class="columns is-centered">
               <div class="video-container">
@@ -297,7 +296,7 @@ awareness under sparse rewards, and (iii) <span style="color: rgb(102, 8, 116); 
           </div>
           <br>
 
-          <h3 class="title is-4"><span style="color: rgb(47, 85, 151);"> Real-world Experiments</span>—Inference Stage
+          <h3 class="title is-4"><span style="color: rgb(197, 90, 17);"> Global Observation Evaluation</span>—Comparison Examples
           </h3>
 
 
@@ -310,18 +309,19 @@ awareness under sparse rewards, and (iii) <span style="color: rgb(102, 8, 116); 
                   <source data-src="./static/videos-lowres/robotic/Video_Project_4.mp4" type="video/mp4">
                 </video>
              <!-- 视频文字说明 -->
-        <p class="video-caption">Failed Cases(2x speed)</p>
-      </div>
-              <div class="video-two-column">
-                <video id="normal robotic motion pcd" class="lazy fixed-height-video" autoplay muted loop playsinline
-                  height="100%">
-                  <source data-src="./static/videos-lowres/robotic/Video_Project_5.mp4" type="video/mp4">
-                </video>
-              <!-- 视频文字说明 -->
-        <p class="video-caption">Successful Cases(2x speed)</p>
-      </div>
+            <p class="video-caption">Failed Cases(2x speed)</p>
+          </div>
+                  <div class="video-two-column">
+                    <video id="normal robotic motion pcd" class="lazy fixed-height-video" autoplay muted loop playsinline
+                      height="100%">
+                      <source data-src="./static/videos-lowres/robotic/Video_Project_5.mp4" type="video/mp4">
+                    </video>
+                  <!-- 视频文字说明 -->
+            <p class="video-caption">Successful Cases(2x speed)
+              (成功但效果不好的例子)</p>
+          </div>
            <div class="video-desc title is-5" style="width: 100%; text-align: center; margin-bottom: 15px; color: rgb(41, 34, 33); font-weight:bold;">
-           Validation Performance of Our Model
+           Validation Performance of Our Model(with Global Observation)
            </div>
               <div class="video-two-column">
                 <video id="complex robotic motion rgb" class="lazy fixed-height-video " autoplay muted loop playsinline
@@ -347,78 +347,59 @@ awareness under sparse rewards, and (iii) <span style="color: rgb(102, 8, 116); 
           <div class="container is-full-hd is-centered">
             <div class="custom-line"></div>
           </div>
-          <!-- More Single Frame Details-->
-          <!-- <div class="container is-max-desktop is-centered has-text-centered">
-            <div class="columns is-centered">
-              <div class="hero-body">
-                <h4 class="title is-5"><span style="color: rgb(41, 34, 33); font-weight:bold">More Single-Frame
-                    Details</span></h4>
-                <div class="container">
-                  <div id="results-carousel" class="carousel results-carousel">
-                    <div class="item item-fullbody">
-                      <img src="./static/images/robotic2.png" alt="Robotic Single Frame 1" width="100%">
-                      <video poster="" id="fullbody" autoplay playsinline muted loop height="10%">
-                        <source src="./static/videos-lowres/robotic/robotic2.mp4" type="video/mp4">
-                      </video>
-                      <p>Viewpoint Occlusion</p>
-                      <p>Self-intersection</p>
-                      <img src="./static/images/break.png" alt="space" width="100%">
+          <br>
 
 
-                    </div>
-                    <div class="item item-shiba">
-                      <img src="./static/images/robotic7.png" alt="Robotic Single Frame 2" width="100%">
-                      <video poster="" id="scissors" autoplay playsinline muted loop height="10%">
-                        <source src="./static/videos-lowres/robotic/robotic7.mp4" type="video/mp4">
-                      </video>
-                      <p>Extensive Occlusion</p>
-                      <p>Trivial DLO Shape</p>
-                      <img src="./static/images/break.png" alt="space" width="100%">
-                    </div>
-                    <div class="item item-shiba">
-                      <img src="./static/images/robotic5.png" alt="Robotic Single Frame 3" width="100%">
-                      <video poster="" id="scissors" autoplay playsinline muted loop height="10%">
-                        <source src="./static/videos-lowres/robotic/robotic5.mp4" type="video/mp4">
-                      </video>
-                      <p>Spatial Proximity</p>
-                      <p>Self-intersection</p>
-                      <img src="./static/images/break.png" alt="space" width="100%">
-                    </div>
-                    <div class="item item-shiba">
-                      <img src="./static/images/rgb_keypoints_1025.png" alt="Robotic Single Frame 4" width="100%">
-                      <video poster="" id="scissors" autoplay playsinline muted loop height="10%">
-                        <source src="./static/videos-lowres/robotic/1025.mp4" type="video/mp4">
-                      </video>
-                      <p>No Occlusion</p>
-                      <p>Trivial DLO Shape</p>
-                      <img src="./static/images/break.png" alt="space" width="100%">
-                    </div>
-                    <div class="item item-shiba">
-                      <img src="./static/images/robotic6.png" alt="Robotic Single Frame 5" width="100%">
-                      <video poster="" id="shiba" autoplay playsinline muted loop height="100%">
-                        <source src="./static/videos-lowres/robotic/robotic6.mp4" type="video/mp4">
-                      </video>
-                      <p>Viewpoint Occlusion</p>
-                      <p>Self-intersection</p>
-                      <img src="./static/images/break.png" alt="space" width="100%">
-                    </div>
-                    <div class="item item-toby">
-                      <img src="./static/images/rgb_keypoints_1250.png" alt="Robotic Single Frame 6" width="100%">
-                      <video poster="" id="toby" autoplay playsinline muted loop height="100%">
-                        <source src="./static/videos-lowres/robotic/1250.mp4" type="video/mp4">
-                      </video>
-                      <p>Slight Occlusion</p>
-                      <p>Trivial DLO Shape</p>
-                      <img src="./static/images/break.png" alt="space" width="100%">
-                    </div>
-                  </div>
-                </div>
+          <h3 class="title is-4"><span style="color: rgb(47, 85, 151);"> Recovery Buffer Evaluation</span>—Comparison Examples
+          </h3>
+
+
+          <div class="column is-centered">
+            <h4 class="title is-5"><span style="color: rgb(41, 34, 33); font-weight:bold">Validation Experiment Performance of the Baseline Model</span></h4>
+            <div class="video-container">
+              <div class="video-two-column">
+                <video id="normal robotic motion rgb" class="lazy fixed-height-video " autoplay muted loop playsinline
+                  height="100%">
+                  <source data-src="./static/videos-lowres/robotic/Video_Project_4.mp4" type="video/mp4">
+                </video>
+             <!-- 视频文字说明 -->
+            <p class="video-caption">竖着插失败案例1</p>
+          </div>
+                  <div class="video-two-column">
+                    <video id="normal robotic motion pcd" class="lazy fixed-height-video" autoplay muted loop playsinline
+                      height="100%">
+                      <source data-src="./static/videos-lowres/robotic/Video_Project_5.mp4" type="video/mp4">
+                    </video>
+                  <!-- 视频文字说明 -->
+            <p class="video-caption">竖着插失败案例2</p>
+          </div>
+           <div class="video-desc title is-5" style="width: 100%; text-align: center; margin-bottom: 15px; color: rgb(41, 34, 33); font-weight:bold;">
+           Validation Performance of Our Model(with Recovery Buffer)
+           </div>
+              <div class="video-two-column">
+                <video id="complex robotic motion rgb" class="lazy fixed-height-video " autoplay muted loop playsinline
+                  height="100%">
+                  <source data-src="./static/videos-lowres/robotic/Video_Project_14.mp4" type="video/mp4">
+                </video>
+                <p>
+                  竖着插成功案例1
+                </p>
+
+              </div>
+              <div class="video-two-column">
+                <video id="complex robotic motion pcd" class="lazy fixed-height-video" autoplay muted loop playsinline
+                  height="100%">
+                  <source data-src="./static/videos-lowres/robotic/Video_Project_11.mp4" type="video/mp4">
+                </video>
+                <p>
+                  竖着插失败案例2
+                </p>
               </div>
             </div>
-          </div> -->
-          <!-- <br>
-          <h4 class="title is-5"><span style="color: rgb(104, 104, 104); font-weight:bold">More Single Frame
-              Details</span></h4> -->
+          </div>
+          <div class="container is-full-hd is-centered">
+            <div class="custom-line"></div>
+          </div>
 
         </div>
       </div>
