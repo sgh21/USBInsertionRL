@@ -378,6 +378,7 @@ def main(_):
         fake_env=FLAGS.learner,
         save_video=FLAGS.save_video,
         classifier=True,
+        stage_classifier=True
     )
     env = RecordEpisodeStatistics(env)
 
