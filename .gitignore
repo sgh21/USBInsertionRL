@@ -1,0 +1,104 @@
+*.egg-info
+build
+__pycache__
+*.py[cod]
+*.so
+*.pyc
+wandb/
+classifier_ckpt/
+classifier_data/
+demo_data/
+debug/
+train_ckpt/
+*.pkl
+
+# ------------------------
+# Python bytecode / cache
+# ------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ------------------------
+# Virtual environments
+# ------------------------
+.venv/
+venv/
+env/
+.conda/
+conda-env/
+.env           # dotenv files (comment out if you want to track)
+*.venv
+
+# ------------------------
+# Packaging / build
+# ------------------------
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# ------------------------
+# Jupyter / notebooks
+# ------------------------
+.ipynb_checkpoints/
+.jupyter/
+
+# ------------------------
+# Test / coverage / profiling
+# ------------------------
+htmlcov/
+.tox/
+.nox/
+.pytest_cache/
+.coverage
+.coverage.*
+.cache/
+profiler.log
+
+# ------------------------
+# IDE / editor
+# ------------------------
+.vscode/
+.idea/
+*.iml
+*.swp
+*.swo
+
+# ------------------------
+# OS-specific
+# ------------------------
+.DS_Store
+Thumbs.db
+
+# ------------------------
+# Machine Learning artifacts
+# ------------------------
+
+# Model weights / checkpoints / serialized objects
+*.pkl          # requested
+*.joblib
+*.ckpt
+*.pt
+*.pth
+*.onnx
+
+# TensorBoard / experiment logs
+runs/
+logs/
+
+# ------------------------
+# Data (adjust to your project)
+# ------------------------
+!data/.gitkeep
+datasets/
+!datasets/.gitkeep
+
+# ------------------------
+# Misc
+# ------------------------
+tmp/
+temp/
+exp_data/
+
