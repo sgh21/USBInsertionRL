@@ -68,24 +68,5 @@ class EncodingWrapper(nn.Module):
             state = nn.LayerNorm()(state)
             state = nn.tanh(state)
             encoded = jnp.concatenate([encoded, state], axis=-1)
-        
-        #! : 3. [新增] 拼接阶段分类器特征 (Stage Features)
-        # 这些特征来自 Frozen Classifier，直接使用
-        if "stage_features" in observations:
-            # debug：
-            # jax.debug.print("add stage_features to agent state")
-            stage_features = observations["stage_features"]
-            
-            # 处理 Chunking 带来的时间维度 (T)
-            if self.enable_stacking:
-                # (Batch, Time, Feature) -> (Batch, Time*Feature)
-                if len(stage_features.shape) == 3:
-                    stage_features = rearrange(stage_features, "B T F -> B (T F)")
-                # (Time, Feature) -> (Time*Feature)
-                elif len(stage_features.shape) == 2:
-                    stage_features = rearrange(stage_features, "T F -> (T F)")
-            
-            # 直接拼接到最终的特征向量中
-            encoded = jnp.concatenate([encoded, stage_features], axis=-1)
-            # print("encoded shape with stage_features:", encoded.shape)
+
         return encoded

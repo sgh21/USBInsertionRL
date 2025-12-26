@@ -3,6 +3,7 @@
 import glob
 import time
 import jax
+from pynput import keyboard
 import jax.numpy as jnp
 import numpy as np
 import tqdm
@@ -34,6 +35,7 @@ from serl_launcher.utils.launcher import (
 from serl_launcher.data.data_store import MemoryEfficientReplayBufferDataStore
 
 from experiments.mappings import CONFIG_MAPPING
+import franka_env.envs.wrappers as wrappers
 
 FLAGS = flags.FLAGS
 
@@ -43,6 +45,7 @@ flags.DEFINE_boolean("learner", False, "Whether this is a learner.")
 flags.DEFINE_boolean("actor", False, "Whether this is an actor.")
 flags.DEFINE_string("ip", "localhost", "IP address of the learner.")
 flags.DEFINE_multi_string("demo_path", None, "Path to the demo data.")
+flags.DEFINE_multi_string("recovery_path", None, "Path to the recovery data.")
 flags.DEFINE_string("checkpoint_path", None, "Path to save checkpoints.")
 flags.DEFINE_integer("eval_checkpoint_step", 0, "Step to evaluate the checkpoint.")
 flags.DEFINE_integer("eval_n_trajs", 0, "Number of trajectories to evaluate.")
@@ -65,7 +68,7 @@ def print_green(x):
 ##############################################################################
 
 
-def actor(agent, data_store, intvn_data_store, env, sampling_rng):
+def actor(agent, data_store, intvn_data_store, recry_data_store, env, sampling_rng):
     """
     This is the actor loop, which runs when "--actor" is set to True.
     """
@@ -119,6 +122,7 @@ def actor(agent, data_store, intvn_data_store, env, sampling_rng):
     datastore_dict = {
         "actor_env": data_store,
         "actor_env_intvn": intvn_data_store,
+        "actor_env_recry": recry_data_store,
     }
 
     client = TrainerClient(
@@ -139,6 +143,7 @@ def actor(agent, data_store, intvn_data_store, env, sampling_rng):
 
     transitions = []
     demo_transitions = []
+    recry_transitions = []
 
     obs, _ = env.reset()
     done = False
@@ -203,6 +208,9 @@ def actor(agent, data_store, intvn_data_store, env, sampling_rng):
             if already_intervened:
                 intvn_data_store.insert(transition)
                 demo_transitions.append(copy.deepcopy(transition))
+            if info.get("recovery", True):
+                recry_data_store.insert(transition)
+                recry_transitions.append(copy.deepcopy(transition))
 
             obs = next_obs
             if done or truncated:
@@ -225,18 +233,22 @@ def actor(agent, data_store, intvn_data_store, env, sampling_rng):
             # dump to pickle file
             buffer_path = os.path.join(FLAGS.checkpoint_path, "buffer")
             demo_buffer_path = os.path.join(FLAGS.checkpoint_path, "demo_buffer")
+            recry_buffer_path = os.path.join(FLAGS.checkpoint_path, "recovery_buffer")
             if not os.path.exists(buffer_path):
                 os.makedirs(buffer_path)
             if not os.path.exists(demo_buffer_path):
                 os.makedirs(demo_buffer_path)
+            if not os.path.exists(recry_buffer_path):
+                os.makedirs(recry_buffer_path)
             with open(os.path.join(buffer_path, f"transitions_{step}.pkl"), "wb") as f:
                 pkl.dump(transitions, f)
                 transitions = []
-            with open(
-                os.path.join(demo_buffer_path, f"transitions_{step}.pkl"), "wb"
-            ) as f:
+            with open(os.path.join(demo_buffer_path, f"transitions_{step}.pkl"), "wb") as f:
                 pkl.dump(demo_transitions, f)
                 demo_transitions = []
+            with open(os.path.join(recry_buffer_path, f"transitions_{step}.pkl"), "wb") as f:
+                pkl.dump(recry_transitions, f)
+                recry_transitions = []
 
         timer.tock("total")
 
@@ -248,7 +260,7 @@ def actor(agent, data_store, intvn_data_store, env, sampling_rng):
 ##############################################################################
 
 
-def learner(rng, agent, replay_buffer, demo_buffer, wandb_logger=None):
+def learner(rng, agent, replay_buffer, demo_buffer, recovery_buffer, wandb_logger=None):
     """
     The learner loop, which runs when "--learner" is set to True.
     """
@@ -271,6 +283,7 @@ def learner(rng, agent, replay_buffer, demo_buffer, wandb_logger=None):
     server = TrainerServer(make_trainer_config(), request_callback=stats_callback)
     server.register_data_store("actor_env", replay_buffer)
     server.register_data_store("actor_env_intvn", demo_buffer)
+    server.register_data_store("actor_env_recry", recovery_buffer)
     server.start(threaded=True)
 
     # Loop to wait until replay_buffer is filled
@@ -294,14 +307,21 @@ def learner(rng, agent, replay_buffer, demo_buffer, wandb_logger=None):
     # 50/50 sampling from RLPD, half from demo and half from online experience
     replay_iterator = replay_buffer.get_iterator(
         sample_args={
-            "batch_size": config.batch_size // 2,
+            "batch_size": int(config.batch_size * 0.4),
             "pack_obs_and_next_obs": True,
         },
         device=sharding.replicate(),
     )
     demo_iterator = demo_buffer.get_iterator(
         sample_args={
-            "batch_size": config.batch_size // 2,
+            "batch_size": int(config.batch_size * 0.4),
+            "pack_obs_and_next_obs": True,
+        },
+        device=sharding.replicate(),
+    )
+    recovery_iterator = recovery_buffer.get_iterator(
+        sample_args={
+            "batch_size": int(config.batch_size * 0.2),
             "pack_obs_and_next_obs": True,
         },
         device=sharding.replicate(),
@@ -326,7 +346,9 @@ def learner(rng, agent, replay_buffer, demo_buffer, wandb_logger=None):
             with timer.context("sample_replay_buffer"):
                 batch = next(replay_iterator)
                 demo_batch = next(demo_iterator)
+                recovery_batch = next(recovery_iterator)
                 batch = concat_batches(batch, demo_batch, axis=0)
+                batch = concat_batches(batch, recovery_batch, axis=0)
 
             with timer.context("train_critics"):
                 agent, critics_info = agent.update(
@@ -337,7 +359,8 @@ def learner(rng, agent, replay_buffer, demo_buffer, wandb_logger=None):
         with timer.context("train"):
             batch = next(replay_iterator)
             demo_batch = next(demo_iterator)
-            batch = concat_batches(batch, demo_batch, axis=0)
+            recovery_batch = next(recovery_iterator)
+            batch = concat_batches(batch, recovery_batch, axis=0)
             agent, update_info = agent.update(
                 batch,
                 networks_to_update=train_networks_to_update,
@@ -364,9 +387,27 @@ def learner(rng, agent, replay_buffer, demo_buffer, wandb_logger=None):
 ##############################################################################
 
 
+def on_press(key):
+    try:
+        if str(key) == 'Key.space':
+            wrappers.is_spacebar_pressed = True
+    except AttributeError:
+        pass
+
+def on_release(key):
+    try:
+        if str(key) == 'Key.space':
+            wrappers.is_spacebar_pressed = False
+    except AttributeError:
+        pass
+
+
 def main(_):
     global config
     config = CONFIG_MAPPING[FLAGS.exp_name]()
+
+    listener = keyboard.Listener(on_press=on_press, on_release=on_release)
+    listener.start()
 
     assert config.batch_size % num_devices == 0
     # seed
@@ -378,7 +419,6 @@ def main(_):
         fake_env=FLAGS.learner,
         save_video=FLAGS.save_video,
         classifier=True,
-        stage_classifier=True
     )
     env = RecordEpisodeStatistics(env)
 
@@ -461,6 +501,13 @@ def main(_):
             image_keys=config.image_keys,
             include_grasp_penalty=include_grasp_penalty,
         )
+        recovery_buffer = MemoryEfficientReplayBufferDataStore(
+            env.observation_space,
+            env.action_space,
+            capacity=config.replay_buffer_capacity,
+            image_keys=config.image_keys,
+            include_grasp_penalty=include_grasp_penalty,
+        )
 
         assert FLAGS.demo_path is not None
         for path in FLAGS.demo_path:
@@ -470,8 +517,16 @@ def main(_):
                     if 'infos' in transition and 'grasp_penalty' in transition['infos']:
                         transition['grasp_penalty'] = transition['infos']['grasp_penalty']
                     demo_buffer.insert(transition)
+        for path in FLAGS.recovery_path:
+            with open(path, "rb") as f:
+                transitions = pkl.load(f)
+                for transition in transitions:
+                    if 'infos' in transition and 'grasp_penalty' in transition['infos']:
+                        transition['grasp_penalty'] = transition['infos']['grasp_penalty']
+                    recovery_buffer.insert(transition)
         print_green(f"demo buffer size: {len(demo_buffer)}")
         print_green(f"online buffer size: {len(replay_buffer)}")
+        print_green(f"recovery buffer size: {len(recovery_buffer)}")
 
         if FLAGS.checkpoint_path is not None and os.path.exists(
             os.path.join(FLAGS.checkpoint_path, "buffer")
@@ -498,6 +553,20 @@ def main(_):
             print_green(
                 f"Loaded previous demo buffer data. Demo buffer size: {len(demo_buffer)}"
             )
+        
+        if FLAGS.checkpoint_path is not None and os.path.exists(
+            os.path.join(FLAGS.checkpoint_path, "recovery_buffer")
+        ):
+            for file in glob.glob(
+                os.path.join(FLAGS.checkpoint_path, "recovery_buffer/*.pkl")
+            ):
+                with open(file, "rb") as f:
+                    transitions = pkl.load(f)
+                    for transition in transitions:
+                        recovery_buffer.insert(transition)
+            print_green(
+                f"Loaded previous recovery buffer data. Recovery buffer size: {len(recovery_buffer)}"
+            )
 
         # learner loop
         print_green("starting learner loop")
@@ -506,6 +575,7 @@ def main(_):
             agent,
             replay_buffer,
             demo_buffer=demo_buffer,
+            recovery_buffer=recovery_buffer,
             wandb_logger=wandb_logger,
         )
 
@@ -513,6 +583,7 @@ def main(_):
         sampling_rng = jax.device_put(sampling_rng, sharding.replicate())
         data_store = QueuedDataStore(50000)  # the queue size on the actor
         intvn_data_store = QueuedDataStore(50000)
+        recry_data_store = QueuedDataStore(50000)
 
         # actor loop
         print_green("starting actor loop")
@@ -520,6 +591,7 @@ def main(_):
             agent,
             data_store,
             intvn_data_store,
+            recry_data_store, 
             env,
             sampling_rng,
         )

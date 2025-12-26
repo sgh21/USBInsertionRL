@@ -101,6 +101,4 @@ datasets/
 tmp/
 temp/
 exp_data/
-stage_dataset/
-stage_classifier_ckpt/
-stage_classifier_images/
+recovery_data/

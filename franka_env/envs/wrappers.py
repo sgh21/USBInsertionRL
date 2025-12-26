@@ -32,6 +32,15 @@ class HumanClassifierWrapper(gym.Wrapper):
     def reset(self, **kwargs):
         obs, info = self.env.reset(**kwargs)
         return obs, info
+
+class HumanRecoveryTagWrapper(gym.Wrapper):
+    def __init__(self, env):
+        super().__init__(env)
+
+    def step(self, action):
+        obs, rew, done, truncated, info = self.env.step(action)
+        info['recovery'] = globals().get("is_spacebar_pressed", False)
+        return obs, rew, done, truncated, info
     
 class MultiCameraBinaryRewardClassifierWrapper(gym.Wrapper):
     """

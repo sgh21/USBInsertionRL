@@ -6,5 +6,6 @@ python examples/train_rlpd.py "$@" \
     --exp_name=usb_pickup_insertion \
     --checkpoint_path=train_ckpt \
     --demo_path=demo_data/data.pkl \
+    --recovery_path=recovery_data/data.pkl \
     --learner \
 

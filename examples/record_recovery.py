@@ -1,4 +1,5 @@
 import os
+from pynput import keyboard
 from tqdm import tqdm
 import numpy as np
 import copy
@@ -8,12 +9,33 @@ from absl import app, flags
 import time
 
 from experiments.mappings import CONFIG_MAPPING
+import franka_env.envs.wrappers as wrappers
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string("exp_name", None, "Name of experiment corresponding to folder.")
-flags.DEFINE_integer("successes_needed", 20, "Number of successful demos to collect.")
+flags.DEFINE_integer("successes_needed", 200, "Number of successful demos to collect.")
+
+def on_press(key):
+    try:
+        if str(key) == 'Key.space':
+            wrappers.is_spacebar_pressed = True
+    except AttributeError:
+        pass
+
+def on_release(key):
+    try:
+        if str(key) == 'Key.space':
+            wrappers.is_spacebar_pressed = False
+    except AttributeError:
+        pass
 
 def main(_):
+    listener = keyboard.Listener(
+        on_press=on_press,
+        on_release=on_release)
+    listener.start()
+
+
     assert FLAGS.exp_name in CONFIG_MAPPING, 'Experiment folder not found.'
     config = CONFIG_MAPPING[FLAGS.exp_name]()
     env = config.get_environment(fake_env=False, save_video=False, classifier=True)
@@ -21,13 +43,13 @@ def main(_):
     obs, info = env.reset()
     print("Reset done")
     transitions = []
-    success_count = 0
-    success_needed = FLAGS.successes_needed
-    pbar = tqdm(total=success_needed)
+    recovery_count = 0
+    recovery_needed = FLAGS.successes_needed
+    pbar = tqdm(total=recovery_needed)
     trajectory = []
     returns = 0
     
-    while success_count < success_needed:
+    while recovery_count < recovery_needed:
         actions = np.zeros(env.action_space.sample().shape) 
         next_obs, rew, done, truncated, info = env.step(actions)
         returns += rew
@@ -49,12 +71,11 @@ def main(_):
         pbar.set_description(f"Return: {returns}")
 
         obs = next_obs
+        if transition.get("infos", {}).get("recovery", False):
+            transitions.append(copy.deepcopy(transition))
+            recovery_count += 1
+            pbar.update(1)
         if done:
-            if info["succeed"]:
-                for transition in trajectory:
-                    transitions.append(copy.deepcopy(transition))
-                success_count += 1
-                pbar.update(1)
             trajectory = []
             returns = 0
             obs, info = env.reset()
@@ -62,10 +83,10 @@ def main(_):
     if not os.path.exists("./recovery_data"):
         os.makedirs("./recovery_data")
     uuid = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    file_name = f"./recovery_data/{FLAGS.exp_name}_{success_needed}_demos_{uuid}.pkl"
+    file_name = f"./recovery_data/{FLAGS.exp_name}_{recovery_needed}_demos_{uuid}.pkl"
     with open(file_name, "wb") as f:
         pkl.dump(transitions, f)
-        print(f"saved {success_needed} recovery demos to {file_name}")
+        print(f"saved {recovery_needed} recoveries to {file_name}")
 
 if __name__ == "__main__":
     app.run(main)
